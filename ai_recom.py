@@ -38,17 +38,54 @@ def recommend():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# def extract_json(text):
+#     try:
+#         match = re.search(r"\{.*\}", text, re.DOTALL)
+#         return json.loads(match.group()) if match else {
+#             "diet_tips": [],
+#             "lifestyle_tips": [],
+#             "notes": [],
+#             "error": "No valid JSON found",
+#             "raw_response": text
+#         }
+#     except Exception as e:
+#         return {
+#             "diet_tips": [],
+#             "lifestyle_tips": [],
+#             "notes": [],
+#             "error": f"JSON parse error: {str(e)}",
+#             "raw_response": text
+#         }
 def extract_json(text):
+
     try:
-        match = re.search(r"\{.*\}", text, re.DOTALL)
-        return json.loads(match.group()) if match else {
+
+        # 🔥 Find ALL JSON objects
+        matches = re.findall(r'\{[\s\S]*?\}', text)
+
+        if matches:
+
+            # ✅ Take ONLY the LAST JSON block
+            last_json = matches[-1]
+
+            parsed = json.loads(last_json)
+
+            return {
+                "diet_tips": parsed.get("diet_tips", []),
+                "lifestyle_tips": parsed.get("lifestyle_tips", []),
+                "notes": parsed.get("notes", [])
+            }
+
+        return {
             "diet_tips": [],
             "lifestyle_tips": [],
             "notes": [],
             "error": "No valid JSON found",
             "raw_response": text
         }
+
     except Exception as e:
+
         return {
             "diet_tips": [],
             "lifestyle_tips": [],
