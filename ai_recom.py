@@ -18,7 +18,7 @@ app = Flask(__name__)
 # Set your Gemini API key
 # genai.configure(api_key="")
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("models/gemma-3n-e2b-it")
+model = genai.GenerativeModel("models/gemma-4-26b-a4b-it")
 
 @app.route("/recommend", methods=["POST"])
 def recommend():
